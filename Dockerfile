@@ -2,7 +2,7 @@
 # 支持多架构构建: linux/amd64, linux/arm64
 
 # 构建参数
-ARG USE_CN_MIRROR=false
+ARG USE_CN_MIRROR=true
 
 # 阶段1: 构建前端
 FROM node:22-alpine AS frontend-builder
@@ -84,14 +84,21 @@ ENV SENTENCE_TRANSFORMERS_HOME=/app/embedding
 
 # 下载 embedding 模型（从 HuggingFace）
 # 使用 Python 脚本预下载模型，这样运行时不需要网络
-RUN python -c "\
-from sentence_transformers import SentenceTransformer; \
-import os; \
-os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/app/embedding'; \
-print('Downloading sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2...'); \
-model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'); \
-print('Model downloaded successfully!'); \
-"
+#RUN python -c "\
+#from sentence_transformers import SentenceTransformer; \
+#import os; \
+#os.environ['SENTENCE_TRANSFORMERS_HOME'] = '/app/embedding'; \
+#print('Downloading sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2...'); \
+#model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2'); \
+#print('Model downloaded successfully!'); \
+#"
+
+# 设置 HuggingFace 缓存目录
+ENV HF_HOME=/app/embedding
+ENV TRANSFORMERS_CACHE=/app/embedding
+
+# 拷贝模型（整个 embedding 目录）
+COPY backend/embedding /app/embedding
 
 # 复制后端代码（不包含embedding，因为已经下载了）
 COPY backend/ ./
