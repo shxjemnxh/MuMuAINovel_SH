@@ -450,7 +450,7 @@ export default function Login() {
                     欢迎回来
                   </Title>
                   <Paragraph style={{ marginBottom: 0, color: token.colorTextSecondary }}>
-                    登录 MuMuAINovel，继续你的小说创作项目。
+                    登录 MuMuAINovel，继续你的小说创作项目。服务器更新测试
                   </Paragraph>
                 </Space>
 
